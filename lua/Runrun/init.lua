@@ -10,6 +10,10 @@ end
 
 M.runCommand = function(index)
   local command = config.listAt(index)
+  if command == nil then
+    print("Runrun: no command at index", index)
+    return
+  end
   vim.cmd(
     string.format(
       "!%s", command
