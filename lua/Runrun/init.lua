@@ -1,40 +1,55 @@
+local popup = require("plenary.popup")
+local ui = require("Runrun.ui")
+local config = require("Runrun.config")
+
 local M = {}
 
-local Path = require("plenary.path")
-M.ui = require("Runrun.ui")
-M.config = require("Runrun.config")
-
-
-local configPath = vim.fn.stdpath("config")
-local dataPath = vim.fn.stdpath("data")
-local userConfig = string.format("%s/runrun.json", configPath)
-local cacheConfig = string.format("%s/runrun.json", dataPath)
-
 M.runEditor = function()
-  M.ui.toggleMenu()
+  ui.toggleMenu()
 end
 
 M.runCommand = function(index)
-  print("run command at ",index)
+  local command = config.listAt(index)
+  vim.cmd(
+    string.format(
+      "!%s", command
+    )
+  )
 end
 
+M.runTerminal = function (index)
 
-local function readConfig(localConfig)
-  return vim.json.decode(Path:new(localConfig):read())
+  --  TODO FIX THIS
+  -- local width = 60
+  -- local height = 10
+  -- local borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
+  --
+  -- local bufnr = vim.api.nvim_create_buf(false, false)
+  --
+  -- local winID, win = popup.create(bufnr, {
+  --   title = "Runrun",
+  --   highlight = "RunrunWindow",
+  --   line = math.floor(((vim.o.lines - height) / 2) - 1),
+  --   col = math.floor((vim.o.columns - width) / 2),
+  --   minwidth = width,
+  --   minheight = height,
+  --   borderchars = borderchars
+  -- })
+  --
+  -- vim.api.nvim_win_set_option(
+  --   win.border.win_id,
+  --   "winhl",
+  --   "Normal:RunrunBorder"
+  -- )
+  -- local term = vim.api.nvim_open_term(bufnr, {})
+  --
+  -- local command = config.listAt(index)
+  -- local termCommand = string.format("%s<CR>", command)
+  -- termCommand = vim.api.nvim_replace_termcodes(termCommand, true, true, true)
+  --
+  -- vim.api.nvim_chan_send(term, termCommand)
+
 end
 
--- TODO add config stuff
-function M.setup(config)
-  if not config then
-    config = {}
-  end
-
-  local ok, u_config = pcall(readConfig, userConfig)
-  
-  if not ok then
-    print("No user config present at", userConfig)
-    u_config = {}
-  end
-end
 
 return M

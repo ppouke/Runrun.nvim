@@ -34,27 +34,63 @@ local function createWindow()
   }
 end
 
-local function close_menu()
+-- local function isWhiteSpace(str)
+--   return str:gsub("%s", "") == ""
+-- end
+
+local function getList()
+  local lines = vim.api.nvim_buf_get_lines(runBufh, 0, -1, true)
+  local indices = {}
+
+  for _, line in ipairs(lines) do
+    -- if not isWhiteSpace(line) then
+    table.insert(indices, line)
+    -- end
+  end
+
+  return indices
+end
+
+function M.save()
+  local list = getList()
+  config.setList(list)
+end
+
+function M.closeMenu()
+  M.save()
   vim.api.nvim_win_close(runWinID, true)
   runWinID = nil
   runBufh = nil
 end
 
-
 M.toggleMenu = function()
   if runWinID ~= nil and vim.api.nvim_win_is_valid(runWinID) then
-    close_menu()
+    M.closeMenu()
     return
   end
 
   local win_info = createWindow()
-  local contents = {}
+  local contents = config.readConfig()
+
 
   runWinID = win_info.win_id
   runBufh = win_info.bufnr
   vim.api.nvim_win_set_option(runWinID, "number", true)
-  vim.api.nvim_buf_set_lines(runBufh, 0, 4, false, {})
+  vim.api.nvim_buf_set_lines(runBufh, 0, #contents, false, contents)
+  vim.api.nvim_buf_set_option(runBufh,"bufhidden", "delete")
+  vim.api.nvim_buf_set_option(runBufh,"buftype", "acwrite")
+  vim.api.nvim_buf_set_keymap(runBufh, "n", "q", "<Cmd>lua require('Runrun.ui').toggleMenu()<CR>", {silent = true})
+  vim.cmd(
+    string.format(
+      "autocmd BufWriteCmd <buffer=%s> lua require('Runrun.ui').save()",
+        runBufh
+    )
+  )
+  vim.cmd(
+    string.format(
+      "autocmd BufLeave <buffer> ++nested ++once lua require('Runrun.ui').toggleMenu()"
+    )
+  )
 end
-
 
 return M
