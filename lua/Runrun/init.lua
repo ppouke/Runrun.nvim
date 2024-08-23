@@ -17,8 +17,7 @@ M.runCommand = function(index)
   )
 end
 
-M.runTerminal = function (index)
-
+M.runTerminal = function(index)
   --  TODO FIX THIS
   -- local width = 60
   -- local height = 10
@@ -48,7 +47,6 @@ M.runTerminal = function (index)
   -- termCommand = vim.api.nvim_replace_termcodes(termCommand, true, true, true)
   --
   -- vim.api.nvim_chan_send(term, termCommand)
-
 end
 
 

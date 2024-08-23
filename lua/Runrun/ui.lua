@@ -77,13 +77,13 @@ M.toggleMenu = function()
   runBufh = win_info.bufnr
   vim.api.nvim_win_set_option(runWinID, "number", true)
   vim.api.nvim_buf_set_lines(runBufh, 0, #contents, false, contents)
-  vim.api.nvim_buf_set_option(runBufh,"bufhidden", "delete")
-  vim.api.nvim_buf_set_option(runBufh,"buftype", "acwrite")
-  vim.api.nvim_buf_set_keymap(runBufh, "n", "q", "<Cmd>lua require('Runrun.ui').toggleMenu()<CR>", {silent = true})
+  vim.api.nvim_buf_set_option(runBufh, "bufhidden", "delete")
+  vim.api.nvim_buf_set_option(runBufh, "buftype", "acwrite")
+  vim.api.nvim_buf_set_keymap(runBufh, "n", "q", "<Cmd>lua require('Runrun.ui').toggleMenu()<CR>", { silent = true })
   vim.cmd(
     string.format(
       "autocmd BufWriteCmd <buffer=%s> lua require('Runrun.ui').save()",
-        runBufh
+      runBufh
     )
   )
   vim.cmd(
